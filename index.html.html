@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐱 Pete the Cat – Big Easter Adventure | Classe 4ª</title>
+<style>
+  :root {
+    --blue: #4472C4;
+    --blue-light: #EAF2FF;
+    --yellow: #E8A838;
+    --yellow-light: #FFF4DC;
+    --green: #5DBB63;
+    --green-light: #EAF7EA;
+    --dark: #2E4057;
+    --gray: #f5f5f5;
+    --gray2: #e8e8e8;
+    --text: #222;
+    --muted: #666;
+    --white: #fff;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', 'Arial Rounded MT Bold', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #fff8f0 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--dark);
+    color: white;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+  }
+  .header-emoji { font-size: 36px; }
+  .header-title { font-size: 22px; font-weight: 700; }
+  .header-sub { font-size: 13px; opacity: .7; margin-top: 2px; }
+  .header-link {
+    margin-left: auto;
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .5px;
+  }
+  .header-link:hover { background: rgba(255,255,255,0.25); }
+
+  /* TABS */
+  .tabs-bar {
+    display: flex;
+    gap: 0;
+    background: var(--dark);
+    padding: 0 32px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .tab-btn {
+    padding: 11px 22px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    letter-spacing: .3px;
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.85); }
+  .tab-btn.active { color: white; border-bottom-color: #FFD44D; }
+
+  /* MAIN */
+  .main { padding: 28px 32px; max-width: 960px; margin: 0 auto; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ─── PETE'S COMMANDS ─── */
+  .commands-intro {
+    background: white;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--gray2);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .commands-intro strong { color: var(--dark); }
+
+  .commands-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .cmd-card {
+    border: 3px solid var(--gray2);
+    border-radius: var(--radius);
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    background: white;
+    transition: all .2s;
+    box-shadow: var(--shadow);
+    user-select: none;
+  }
+  .cmd-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.13); }
+  .cmd-card:active { transform: scale(.97); }
+  .cmd-card.find:hover, .cmd-card.find.active-cmd { border-color: var(--blue); background: var(--blue-light); }
+  .cmd-card.paint:hover, .cmd-card.paint.active-cmd { border-color: var(--yellow); background: var(--yellow-light); }
+  .cmd-card.hide:hover, .cmd-card.hide.active-cmd { border-color: var(--green); background: var(--green-light); }
+  .cmd-card .c-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    color: var(--muted); margin-bottom: 8px; text-transform: uppercase;
+  }
+  .cmd-card .c-emoji { font-size: 52px; display: block; margin-bottom: 10px; }
+  .cmd-card .c-en { font-size: 19px; font-weight: 700; color: var(--dark); }
+  .cmd-card .c-it { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .cmd-card .c-mime {
+    margin-top: 10px;
+    font-size: 12px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: 4px 10px;
+    display: inline-block;
+    color: var(--muted);
+  }
+
+  .cmd-feedback {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dark);
+    min-height: 36px;
+    margin-bottom: 16px;
+    transition: all .2s;
+  }
+
+  .cmd-actions { display: flex; gap: 12px; }
+  .big-btn {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid var(--gray2);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--dark);
+    transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .big-btn:hover { background: var(--gray); border-color: var(--dark); }
+  .big-btn.primary { background: var(--dark); color: white; border-color: var(--dark); }
+  .big-btn.primary:hover { background: #1a2840; }
+
+  .seq-status {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+    min-height: 22px;
+  }
+
+  /* ─── FLASHCARDS ─── */
+  .fc-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .fc-card {
+    border: 2px solid var(--gray2);
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    background: white;
+    transition: all .2s;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    position: relative;
+  }
+  .fc-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--blue); }
+  .fc-card.revealed { border-color: var(--blue); background: var(--blue-light); }
+  .fc-card.learned { border-color: var(--green); background: var(--green-light); }
+  .fc-card .fc-emoji { font-size: 30px; display: block; margin-bottom: 6px; }
+  .fc-card .fc-word { font-size: 13px; font-weight: 700; color: var(--dark); }
+  .fc-card .fc-it { font-size: 12px; color: var(--muted); margin-top: 3px; display: none; }
+  .fc-card.revealed .fc-it, .fc-card.learned .fc-it { display: block; }
+  .fc-card .fc-tag {
+    font-size: 9px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 4px; display: block;
+  }
+  .fc-card.learned .fc-checkmark {
+    position: absolute; top: 6px; right: 8px;
+    font-size: 14px; color: var(--green);
+  }
+  .fc-legend {
+    text-align: center; font-size: 13px; color: var(--muted);
+    background: white; border-radius: var(--radius-sm);
+    padding: 10px; border: 1px solid var(--gray2);
+  }
+  .fc-progress {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .fc-progress-bar {
+    flex: 1; height: 8px; background: var(--gray2);
+    border-radius: 4px; overflow: hidden;
+  }
+  .fc-progress-fill {
+    height: 100%; background: var(--green);
+    border-radius: 4px; transition: width .4s;
+    width: 0%;
+  }
+  .fc-progress-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+  /* ─── QUIZ ─── */
+  .quiz-top {
+    display: flex; gap: 12px; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .score-pill {
+    background: white; border: 1.5px solid var(--gray2);
+    border-radius: 999px; padding: 6px 18px;
+    font-size: 14px; font-weight: 600; color: var(--muted);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .score-pill span { color: var(--dark); }
+
+  .quiz-card {
+    background: white; border-radius: var(--radius);
+    border: 1.5px solid var(--gray2); padding: 28px 24px;
+    text-align: center; max-width: 520px; margin: 0 auto 20px;
+    box-shadow: var(--shadow);
+  }
+  .quiz-card .q-emoji { font-size: 64px; display: block; margin-bottom: 10px; }
+  .quiz-card .q-prompt {
+    font-size: 16px; color: var(--muted);
+    background: var(--gray); border-radius: 8px;
+    padding: 8px 16px; display: inline-block;
+  }
+
+  .quiz-options {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; max-width: 520px; margin: 0 auto 16px;
+  }
+  .quiz-opt {
+    padding: 14px 10px;
+    border: 2px solid var(--gray2); border-radius: var(--radius-sm);
+    background: white; font-size: 15px; font-weight: 600;
+    cursor: pointer; text-align: center; transition: all .15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .quiz-opt:hover:not(:disabled) { background: var(--gray); border-color: var(--dark); transform: translateY(-1px); }
+  .quiz-opt.correct { background: var(--green-light); border-color: var(--green); color: #2a7a30; }
+  .quiz-opt.wrong { background: #FFECEC; border-color: #E57373; color: #c0392b; }
+
+  .quiz-feedback {
+    text-align: center; font-size: 18px; font-weight: 700;
+    min-height: 28px; margin-bottom: 12px; color: var(--dark);
+  }
+  .next-btn {
+    display: block; width: 100%; max-width: 520px; margin: 0 auto;
+    padding: 13px; border: 2px solid var(--dark);
+    border-radius: var(--radius-sm); background: var(--dark);
+    color: white; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all .2s;
+  }
+  .next-btn:hover:not(:disabled) { background: #1a2840; }
+  .next-btn:disabled { opacity: .35; cursor: default; background: var(--gray2); border-color: var(--gray2); color: var(--muted); }
+
+  /* ─── BINGO ─── */
+  .bingo-layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+  .bingo-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .bingo-cell {
+    aspect-ratio: 1;
+    border: 2.5px solid var(--gray2); border-radius: var(--radius);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; background: white;
+    transition: all .2s; padding: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    user-select: none;
+  }
+  .bingo-cell:hover:not(.free) { border-color: var(--blue); background: var(--blue-light); transform: scale(1.03); }
+  .bingo-cell.marked { background: var(--yellow-light); border-color: var(--yellow); }
+  .bingo-cell.free { background: var(--green-light); border-color: var(--green); cursor: default; }
+  .bingo-cell.bingo-win { background: var(--blue-light); border-color: var(--blue); animation: pulse .4s ease-in-out 4; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .bingo-cell .b-emoji { font-size: 36px; display: block; }
+  .bingo-cell .b-word { font-size: 12px; font-weight: 700; color: var(--dark); margin-top: 4px; }
+
+  .bingo-panel {
+    background: white; border-radius: var(--radius);
+    border: 1.5px solid var(--gray2); padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .bingo-panel h3 { font-size: 16px; color: var(--dark); margin-bottom: 14px; }
+  .called-display {
+    background: var(--dark); color: white;
+    border-radius: var(--radius-sm); padding: 18px;
+    text-align: center; margin-bottom: 14px;
+    min-height: 80px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .called-emoji { font-size: 36px; display: block; margin-bottom: 4px; }
+  .called-text { font-size: 20px; font-weight: 700; }
+  .called-sub { font-size: 13px; opacity: .6; margin-top: 2px; }
+
+  .bingo-announce {
+    text-align: center; font-size: 17px; font-weight: 700;
+    color: var(--green); min-height: 26px; margin-bottom: 12px;
+  }
+  .bingo-btn {
+    display: block; width: 100%; padding: 12px;
+    border: 2px solid var(--gray2); border-radius: var(--radius-sm);
+    background: white; font-size: 14px; font-weight: 600;
+    cursor: pointer; color: var(--dark); transition: all .15s;
+    margin-bottom: 8px;
+  }
+  .bingo-btn:hover { background: var(--gray); }
+  .bingo-btn.primary { background: var(--dark); color: white; border-color: var(--dark); font-size: 16px; padding: 14px; }
+  .bingo-btn.primary:hover { background: #1a2840; }
+
+  .called-list { margin-top: 12px; border-top: 1px solid var(--gray2); padding-top: 10px; }
+  .called-list-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 6px; }
+  .called-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .called-chip {
+    background: var(--gray); border-radius: 999px;
+    padding: 3px 10px; font-size: 11px; font-weight: 600; color: var(--muted);
+  }
+
+  /* ─── RANDOM CARD ─── */
+  .rc-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 10px 0;
+  }
+  .rc-counter {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: .5px;
+  }
+  .rc-scene {
+    width: 340px;
+    height: 340px;
+    perspective: 900px;
+    cursor: pointer;
+  }
+  .rc-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .55s cubic-bezier(.4,0,.2,1);
+  }
+  .rc-card-inner.flipped { transform: rotateY(180deg); }
+  .rc-front, .rc-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+  }
+  .rc-front {
+    background: var(--dark);
+    border: 3px solid var(--dark);
+  }
+  .rc-front .rc-emoji { font-size: 110px; line-height: 1; }
+  .rc-front .rc-tap { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 18px; }
+  .rc-back {
+    background: white;
+    border: 3px solid var(--blue);
+    transform: rotateY(180deg);
+  }
+  .rc-back .rc-emoji-sm { font-size: 52px; margin-bottom: 12px; }
+  .rc-back .rc-word { font-size: 42px; font-weight: 700; color: var(--dark); }
+  .rc-back .rc-it { font-size: 22px; color: var(--muted); margin-top: 8px; }
+  .rc-back .rc-tag {
+    margin-top: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--gray);
+    border-radius: 20px;
+    padding: 4px 14px;
+    color: var(--muted);
+  }
+  .rc-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .rc-btn {
+    padding: 13px 28px;
+    border: 2px solid var(--gray2);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--dark);
+    transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .rc-btn:hover { background: var(--gray); border-color: var(--dark); }
+  .rc-btn.primary { background: var(--dark); color: white; border-color: var(--dark); }
+  .rc-btn.primary:hover { background: #1a2840; }
+  .rc-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .rc-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gray2);
+    transition: background .3s;
+  }
+  .rc-dot.done { background: var(--green); }
+  .rc-dot.current { background: var(--blue); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 700px) {
+    .main { padding: 16px; }
+    .commands-grid { grid-template-columns: 1fr; }
+    .fc-grid { grid-template-columns: repeat(3,1fr); }
+    .bingo-layout { grid-template-columns: 1fr; }
+    .header { padding: 12px 16px; }
+    .tabs-bar { padding: 0 8px; overflow-x: auto; }
+    .tab-btn { padding: 10px 14px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <span class="header-emoji">🐱</span>
+  <div>
+    <div class="header-title">Pete the Cat: Big Easter Adventure</div>
+    <div class="header-sub">Classe 4ª Primaria – Inglese | Easter Vocabulary</div>
+  </div>
+  <a class="header-link" href="https://youtu.be/BakRa62GLbQ" target="_blank">▶ Guarda il video</a>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="setTab('pete')">🎬 Pete's Commands</button>
+  <button class="tab-btn" onclick="setTab('random')">🃏 Random Card</button>
+  <button class="tab-btn" onclick="setTab('flashcards')">📚 Flashcards</button>
+  <button class="tab-btn" onclick="setTab('quiz')">🧠 Quiz</button>
+  <button class="tab-btn" onclick="setTab('bingo')">🎉 Bingo</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ── PETE'S COMMANDS ── -->
+  <div id="tab-pete" class="screen active">
+    <div class="commands-intro">
+      The Easter Bunny writes Pete a note:<br>
+      <strong>"Find the eggs. Paint the eggs. Hide the eggs."</strong><br>
+      Click a command — then mime the action! 🐱
+    </div>
+    <div class="commands-grid">
+      <div class="cmd-card find" onclick="showCmd('find')">
+        <div class="c-num">1st</div>
+        <span class="c-emoji">🔍</span>
+        <div class="c-en">FIND the eggs!</div>
+        <span class="c-mime">👀 Look around!</span>
+      </div>
+      <div class="cmd-card paint" onclick="showCmd('paint')">
+        <div class="c-num">2nd</div>
+        <span class="c-emoji">🎨</span>
+        <div class="c-en">PAINT the eggs!</div>
+        <span class="c-mime">🖌 Brush strokes!</span>
+      </div>
+      <div class="cmd-card hide" onclick="showCmd('hide')">
+        <div class="c-num">3rd</div>
+        <span class="c-emoji">🙈</span>
+        <div class="c-en">HIDE the eggs!</div>
+        <span class="c-mime">🤫 Hide your hands!</span>
+      </div>
+    </div>
+    <div class="cmd-feedback" id="cmd-feedback">Click a command to start! 👆</div>
+    <div class="cmd-actions">
+      <button class="big-btn" onclick="randomCmd()">🎲 Random command!</button>
+      <button class="big-btn primary" onclick="peteSequence()">🐱 Pete's full sequence (1→2→3)</button>
+    </div>
+    <div class="seq-status" id="seq-status"></div>
+  </div>
+
+  <!-- ── RANDOM CARD ── -->
+  <div id="tab-random" class="screen">
+    <div class="rc-container">
+      <div class="rc-counter" id="rc-counter">Card 1 of 10</div>
+      <div class="rc-scene" onclick="flipCard()">
+        <div class="rc-card-inner" id="rc-inner">
+          <div class="rc-front">
+            <span class="rc-emoji" id="rc-emoji-front">🥚</span>
+            <span class="rc-tap">tap to reveal →</span>
+          </div>
+          <div class="rc-back">
+            <span class="rc-emoji-sm" id="rc-emoji-back">🥚</span>
+            <span class="rc-word" id="rc-word">egg</span>
+            <span class="rc-it" id="rc-it">uovo</span>
+            <span class="rc-tag" id="rc-tag">vocab</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-dots" id="rc-dots"></div>
+      <div class="rc-actions">
+        <button class="rc-btn" onclick="prevCard()">← Previous</button>
+        <button class="rc-btn primary" onclick="nextCard()">Next card →</button>
+        <button class="rc-btn" onclick="reshuffleCards()">🔀 Shuffle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FLASHCARDS ── -->
+  <div id="tab-flashcards" class="screen">
+    <div class="fc-progress">
+      <div class="fc-progress-bar"><div class="fc-progress-fill" id="fc-bar"></div></div>
+      <div class="fc-progress-label" id="fc-label">0 / 10 learned</div>
+    </div>
+    <div class="fc-grid" id="fc-grid"></div>
+    <div class="fc-legend">
+      👆 Click once → see Italian &nbsp;|&nbsp; Click twice → mark as learned ✅ &nbsp;|&nbsp; Click again → reset
+    </div>
+  </div>
+
+  <!-- ── QUIZ ── -->
+  <div id="tab-quiz" class="screen">
+    <div class="quiz-top">
+      <div class="score-pill">Correct: <span id="q-correct">0</span></div>
+      <div class="score-pill">Total: <span id="q-total">0</span></div>
+      <div class="score-pill" id="q-streak-pill" style="display:none">🔥 Streak: <span id="q-streak">0</span></div>
+    </div>
+    <div class="quiz-card">
+      <span class="q-emoji" id="q-emoji">🥚</span>
+      <div class="q-prompt" id="q-prompt">What is this in English?</div>
+    </div>
+    <div class="quiz-options" id="q-options"></div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+    <button class="next-btn" id="q-next" onclick="nextQuestion()" disabled>Next question →</button>
+  </div>
+
+  <!-- ── BINGO ── -->
+  <div id="tab-bingo" class="screen">
+    <div class="bingo-layout">
+      <div class="bingo-grid" id="bingo-grid"></div>
+      <div class="bingo-panel">
+        <h3>🎙 Teacher calls:</h3>
+        <div class="called-display" id="called-display">
+          <span class="called-emoji">🐱</span>
+          <span class="called-text">Ready?</span>
+          <span class="called-sub">Press the button!</span>
+        </div>
+        <div class="bingo-announce" id="bingo-announce"></div>
+        <button class="bingo-btn primary" onclick="callWord()">📢 Call next word!</button>
+        <button class="bingo-btn" onclick="resetBingo()">🔄 New game</button>
+        <div class="called-list" id="called-list" style="display:none">
+          <div class="called-list-label">Words called:</div>
+          <div class="called-chips" id="called-chips"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ── DATA ──
+const WORDS = [
+  {en:'egg',     it:'uovo',        emoji:'🥚', type:'vocab'},
+  {en:'bunny',   it:'coniglio',    emoji:'🐰', type:'vocab'},
+  {en:'basket',  it:'cestino',     emoji:'🧺', type:'vocab'},
+  {en:'chick',   it:'pulcino',     emoji:'🐤', type:'vocab'},
+  {en:'chocolate',it:'cioccolato', emoji:'🍫', type:'vocab'},
+  {en:'flower',  it:'fiore',       emoji:'🌸', type:'vocab'},
+  {en:'helper',  it:'aiutante',    emoji:'⭐', type:'story'},
+  {en:'find',    it:'trovare',     emoji:'🔍', type:'action'},
+  {en:'paint',   it:'dipingere',   emoji:'🎨', type:'action'},
+  {en:'hide',    it:'nascondere',  emoji:'🙈', type:'action'},
+];
+
+const STORY_QS = [
+  {prompt:"What does Pete do FIRST?",  answer:"find",  options:["find","paint","hide","eat"],   emoji:"🐱"},
+  {prompt:"What does Pete do SECOND?", answer:"paint", options:["find","paint","hide","sleep"], emoji:"🐱"},
+  {prompt:"What does Pete do THIRD?",  answer:"hide",  options:["find","paint","hide","run"],   emoji:"🐱"},
+  {prompt:"Who writes the note to Pete?", answer:"Easter Bunny", options:["Easter Bunny","Pete","chick","flower"], emoji:"🐰"},
+  {prompt:"What does Pete get at the end?", answer:"a ribbon", options:["a ribbon","an egg","a basket","chocolate"], emoji:"⭐"},
+];
+
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+
+// ── TABS ──
+function setTab(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs=['pete','random','flashcards','quiz','bingo'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(id)].classList.add('active');
+  if(id==='quiz') initQuiz();
+  if(id==='bingo') { if(!bingoReady) initBingo(); }
+  if(id==='random') initRandom();
+}
+
+// ── PETE'S COMMANDS ──
+const CMDS = {
+  find:  { msg:"🔍 Look around! Search for eggs!", bg:"blue" },
+  paint: { msg:"🎨 Pick up a brush! Start painting!", bg:"yellow" },
+  hide:  { msg:"🙈 Sshhh! Go hide those eggs!", bg:"green" },
+};
+let seqRunning=false, seqStep=0;
+
+function showCmd(cmd){
+  document.querySelectorAll('.cmd-card').forEach(c=>c.classList.remove('active-cmd'));
+  document.querySelector('.cmd-card.'+cmd).classList.add('active-cmd');
+  document.getElementById('cmd-feedback').textContent = CMDS[cmd].msg;
+  document.getElementById('seq-status').textContent = '';
+}
+function randomCmd(){
+  const cmds=['find','paint','hide'];
+  showCmd(cmds[Math.floor(Math.random()*3)]);
+}
+function peteSequence(){
+  if(seqRunning) return;
+  seqRunning=true; seqStep=0;
+  const status=document.getElementById('seq-status');
+  const seq=['find','paint','hide'];
+  const msgs=["Step 1 of 3 – Find the eggs! 🔍","Step 2 of 3 – Paint the eggs! 🎨","Step 3 of 3 – Hide the eggs! 🙈"];
+  function step(){
+    if(seqStep>=seq.length){
+      document.getElementById('cmd-feedback').textContent="It's all good! 🐱 Pete is a #1 Helper! ⭐";
+      status.textContent="Pete helped the Easter Bunny!";
+      seqRunning=false; return;
+    }
+    showCmd(seq[seqStep]);
+    status.textContent=msgs[seqStep];
+    seqStep++; setTimeout(step,2200);
+  }
+  step();
+}
+
+// ── RANDOM CARD ──
+let rcDeck=[], rcIndex=0, rcFlipped=false, rcReady=false;
+
+function initRandom(){
+  if(rcReady) return;
+  rcReady=true;
+  reshuffleCards();
+}
+
+function reshuffleCards(){
+  rcDeck=shuffle([...WORDS]);
+  rcIndex=0;
+  rcFlipped=false;
+  document.getElementById('rc-inner').classList.remove('flipped');
+  renderCard();
+  buildDots();
+}
+
+function renderCard(){
+  const w=rcDeck[rcIndex];
+  document.getElementById('rc-emoji-front').textContent=w.emoji;
+  document.getElementById('rc-emoji-back').textContent=w.emoji;
+  document.getElementById('rc-word').textContent=w.en;
+  document.getElementById('rc-it').textContent=w.it;
+  const tagLabel=w.type==='action'?'🎬 action':w.type==='story'?'📖 story':'🥚 vocab';
+  document.getElementById('rc-tag').textContent=tagLabel;
+  document.getElementById('rc-counter').textContent='Card '+(rcIndex+1)+' of '+rcDeck.length;
+  updateDots();
+}
+
+function flipCard(){
+  rcFlipped=!rcFlipped;
+  document.getElementById('rc-inner').classList.toggle('flipped', rcFlipped);
+}
+
+function nextCard(){
+  if(rcIndex<rcDeck.length-1){ rcIndex++; } else { rcIndex=0; }
+  rcFlipped=false;
+  document.getElementById('rc-inner').classList.remove('flipped');
+  setTimeout(renderCard, 60);
+}
+
+function prevCard(){
+  if(rcIndex>0){ rcIndex--; } else { rcIndex=rcDeck.length-1; }
+  rcFlipped=false;
+  document.getElementById('rc-inner').classList.remove('flipped');
+  setTimeout(renderCard, 60);
+}
+
+function buildDots(){
+  const container=document.getElementById('rc-dots');
+  container.innerHTML='';
+  rcDeck.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='rc-dot';
+    container.appendChild(d);
+  });
+  updateDots();
+}
+
+function updateDots(){
+  document.querySelectorAll('.rc-dot').forEach((d,i)=>{
+    d.classList.remove('done','current');
+    if(i<rcIndex) d.classList.add('done');
+    else if(i===rcIndex) d.classList.add('current');
+  });
+}
+
+// ── FLASHCARDS ──
+let learnedCount=0;
+const fcGrid=document.getElementById('fc-grid');
+WORDS.forEach(w=>{
+  const card=document.createElement('div');
+  card.className='fc-card';
+  const tagLabel=w.type==='action'?'🎬 action':w.type==='story'?'📖 story':'🥚 vocab';
+  card.innerHTML=`
+    <span class="fc-emoji">${w.emoji}</span>
+    <span class="fc-word">${w.en}</span>
+    <span class="fc-it">${w.it}</span>
+    <span class="fc-tag">${tagLabel}</span>
+    <span class="fc-checkmark">✅</span>
+  `;
+  card.dataset.state='0';
+  card.onclick=()=>{
+    const s=card.dataset.state;
+    if(s==='0'){ card.classList.add('revealed'); card.dataset.state='1'; }
+    else if(s==='1'){ card.classList.add('learned'); card.dataset.state='2'; learnedCount++; updateProgress(); }
+    else { card.classList.remove('revealed','learned'); card.dataset.state='0'; learnedCount=Math.max(0,learnedCount-1); updateProgress(); }
+  };
+  fcGrid.appendChild(card);
+});
+function updateProgress(){
+  const pct=(learnedCount/WORDS.length*100).toFixed(0);
+  document.getElementById('fc-bar').style.width=pct+'%';
+  document.getElementById('fc-label').textContent=learnedCount+' / '+WORDS.length+' learned';
+}
+
+// ── QUIZ ──
+let qCorrect=0, qTotal=0, qStreak=0, qAnswered=false, storyIdx=0;
+
+function initQuiz(){ qCorrect=0; qTotal=0; qStreak=0; storyIdx=0; qAnswered=false; nextQuestion(); }
+
+function nextQuestion(){
+  qAnswered=false;
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('q-next').disabled=true;
+
+  const useStory = storyIdx < STORY_QS.length && Math.random()>0.45;
+  if(useStory){
+    const sq=STORY_QS[storyIdx++];
+    document.getElementById('q-emoji').textContent=sq.emoji;
+    document.getElementById('q-prompt').textContent=sq.prompt;
+    const container=document.getElementById('q-options'); container.innerHTML='';
+    shuffle(sq.options).forEach(opt=>{
+      const btn=document.createElement('button'); btn.className='quiz-opt'; btn.textContent=opt;
+      btn.onclick=()=>answerQuiz(btn, opt===sq.answer, sq.answer);
+      container.appendChild(btn);
+    });
+  } else {
+    const w=WORDS[Math.floor(Math.random()*WORDS.length)];
+    document.getElementById('q-emoji').textContent=w.emoji;
+    document.getElementById('q-prompt').textContent='What is this in English?';
+    const opts=shuffle([w,...shuffle(WORDS.filter(x=>x!==w)).slice(0,3)]);
+    const container=document.getElementById('q-options'); container.innerHTML='';
+    opts.forEach(opt=>{
+      const btn=document.createElement('button'); btn.className='quiz-opt'; btn.textContent=opt.en;
+      btn.onclick=()=>answerQuiz(btn, opt.en===w.en, w.en);
+      container.appendChild(btn);
+    });
+  }
+}
+
+function answerQuiz(btn, correct, correctAnswer){
+  if(qAnswered) return;
+  qAnswered=true; qTotal++;
+  if(correct){
+    qCorrect++; qStreak++;
+    btn.classList.add('correct');
+    const msgs=["Well done! 🐱","Excellent! ⭐","It's all good! 🎉","Great job! 🥚","Super! 🌸"];
+    document.getElementById('q-feedback').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  } else {
+    qStreak=0;
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt').forEach(b=>{ if(b.textContent===correctAnswer) b.classList.add('correct'); });
+    document.getElementById('q-feedback').textContent='Not quite! The answer is: '+correctAnswer;
+  }
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+  document.getElementById('q-next').disabled=false;
+  document.getElementById('q-correct').textContent=qCorrect;
+  document.getElementById('q-total').textContent=qTotal;
+  if(qStreak>=2){
+    document.getElementById('q-streak-pill').style.display='';
+    document.getElementById('q-streak').textContent=qStreak;
+  }
+}
+
+// ── BINGO ──
+let bingoWords=[], calledWords=[], bingoGrid=[], bingoReady=false;
+
+function initBingo(){
+  bingoReady=true;
+  calledWords=[];
+  const shuffled=shuffle(WORDS).slice(0,8);
+  bingoWords=[...shuffled];
+  const cells=[...shuffled]; cells.splice(4,0,{en:'Pete!',it:'Pete!',emoji:'🐱',free:true});
+
+  const grid=document.getElementById('bingo-grid'); grid.innerHTML='';
+  bingoGrid=[];
+
+  cells.forEach(w=>{
+    const cell=document.createElement('div');
+    cell.className='bingo-cell'+(w.free?' free':'');
+    cell.innerHTML=`<span class="b-emoji">${w.emoji}</span><span class="b-word">${w.en}</span>`;
+    if(w.free) cell.dataset.marked='1';
+    cell.onclick=()=>{
+      if(!w.free && calledWords.includes(w.en)){
+        cell.classList.toggle('marked');
+        cell.dataset.marked=cell.classList.contains('marked')?'1':'0';
+        checkBingo();
+      }
+    };
+    grid.appendChild(cell);
+    bingoGrid.push({el:cell, word:w});
+  });
+
+  document.getElementById('called-display').innerHTML=`<span class="called-emoji">🐱</span><span class="called-text">Ready?</span><span class="called-sub">Press the button!</span>`;
+  document.getElementById('bingo-announce').textContent='';
+  document.getElementById('called-list').style.display='none';
+  document.getElementById('called-chips').innerHTML='';
+}
+
+function callWord(){
+  const remaining=bingoWords.filter(w=>!calledWords.includes(w.en));
+  if(!remaining.length){
+    document.getElementById('called-display').innerHTML=`<span class="called-emoji">🎉</span><span class="called-text">All done!</span><span class="called-sub">All words called</span>`;
+    return;
+  }
+  const w=remaining[Math.floor(Math.random()*remaining.length)];
+  calledWords.push(w.en);
+  document.getElementById('called-display').innerHTML=`<span class="called-emoji">${w.emoji}</span><span class="called-text">${w.en.toUpperCase()}</span><span class="called-sub">${w.it}</span>`;
+  document.getElementById('bingo-announce').textContent='';
+  document.getElementById('called-list').style.display='';
+  const chip=document.createElement('span');
+  chip.className='called-chip'; chip.textContent=w.emoji+' '+w.en;
+  document.getElementById('called-chips').appendChild(chip);
+}
+
+function checkBingo(){
+  const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for(const line of lines){
+    if(line.every(i=>bingoGrid[i].el.dataset.marked==='1')){
+      line.forEach(i=>bingoGrid[i].el.classList.add('bingo-win'));
+      document.getElementById('bingo-announce').textContent="🎉 BINGO! It's all good! 🐱";
+      return;
+    }
+  }
+}
+function resetBingo(){ initBingo(); }
+
+// Init
+initBingo();
+</script>
+</body>
+</html>
